@@ -9,7 +9,7 @@ namespace SysLog
     {
         // Variables
         private const string InputFile = @"D:\Downloads\syslog.log";
-        private const string OutputFile = @"D:\result.json";
+        private const string OutputFile = @"D:\result.txt";
         private static int _counter;
 
         // Patterns
@@ -60,7 +60,7 @@ namespace SysLog
                     var m1 = ParseDateTime.Match(s);
                     if (m1.Success)
                     {
-                        File.AppendAllText(OutputFile, @"{" + Environment.NewLine + "DateTime: " + m1 + "," + Environment.NewLine);
+                        File.AppendAllText(OutputFile, @"DateTime: " + m1 + "," + Environment.NewLine);
                     }
                     // IP
                     var m2 = ParseIp.Match(s);
@@ -96,7 +96,7 @@ namespace SysLog
                     var m7 = ParseTargetIp.Match(s);
                     if (m7.Success)
                     {
-                        File.AppendAllText(OutputFile, @"TargetIp: " + m7 + Environment.NewLine + "}" + Environment.NewLine);
+                        File.AppendAllText(OutputFile, @"TargetIp: " + m7 + Environment.NewLine + Environment.NewLine);
                     }
 
                     // Increment _counter
