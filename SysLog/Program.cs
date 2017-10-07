@@ -7,7 +7,7 @@ using static System.Configuration.ConfigurationSettings;
 
 namespace SysLog
 {
-    class Program
+    internal class Program
     {
         private struct Fields
         {
@@ -31,7 +31,7 @@ namespace SysLog
         private static readonly Regex ParseRawMessage = new Regex(AppSettings["ParseRawMessage"]);
         private static readonly Regex ParseTargetIp = new Regex(AppSettings["ParseTargetIp"]);
         // Main program
-        static void Main()
+        private static void Main()
         {
             // Parse enrties from log to list
             var data = new List<Fields>();
@@ -47,7 +47,7 @@ namespace SysLog
                         Source = ParseSource.Match(line).Success ? ParseSource.Match(line).ToString() : null,
                         Header = ParseHeader.Match(line).Success ? ParseHeader.Match(line).ToString() : null,
                         Community = ParseCommunity.Match(line).Success ? ParseCommunity.Match(line).ToString() : null,
-                        RawMessage = ParseRawMessage.Match(line).Success ? ParseRawMessage.Match(line).ToString() : null,
+                        RawMessage = ParseRawMessage.Match(line).Success ? ParseRawMessage.Match(line).ToString().Replace(": ", "") : null,
                         TargetIp = ParseTargetIp.Match(line).Success ? ParseTargetIp.Match(line).ToString() : null
                     };
                     data.Add(logEntries); //Add filled structure to list
