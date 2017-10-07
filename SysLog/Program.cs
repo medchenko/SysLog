@@ -9,7 +9,7 @@ namespace SysLog
 {
     class Program
     {
-        struct Fields
+        private struct Fields
         {
             public string DateTime;
             public string Ip;
@@ -34,7 +34,7 @@ namespace SysLog
         static void Main()
         {
             // Parse enrties from log to list
-            List<Fields> data = new List<Fields>();
+            var data = new List<Fields>();
             using (var r = new StreamReader(InputFile))
             {
                 string line;
