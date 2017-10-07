@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text.RegularExpressions;
 using System.Web.Script.Serialization;
+using static System.Configuration.ConfigurationSettings;
 
 namespace SysLog
 {
@@ -18,47 +19,45 @@ namespace SysLog
             public string RawMessage;
             public string TargetIp;
         }
-
-        // Variables
-        private static string InputFile = @"D:\Downloads\syslog.log";
-        private static string OutputFile = @"D:\result.json";
-
-        // Load regulars
-        private static readonly Regex ParseDateTime = new Regex(@"(^.{0,15})");
-        private static readonly Regex ParseIp = new Regex(@"([0-9][0-9].[0-9].[0-9].[0-9][0-9])");
-        private static readonly Regex ParseSource = new Regex(@"([\w]+\[(.*?)\])");
-        private static readonly Regex ParseHeader = new Regex(@"([A-Z]\w+_[A-Z]\w+:)|([a-z]\w+_[a-z]\w+:)");
-        private static readonly Regex ParseCommunity = new Regex(@"");
-        private static readonly Regex ParseRawMessage = new Regex(@"");
-        private static readonly Regex ParseTargetIp = new Regex(@"");
-
-
+        // Load variables from App.config
+        private static readonly string InputFile = AppSettings["InputFile"];
+        private static readonly string OutputFile = AppSettings["OutputFile"];
+        // Load regulars from App.config
+        private static readonly Regex ParseDateTime = new Regex(AppSettings["ParseDateTime"]);
+        private static readonly Regex ParseIp = new Regex(AppSettings["ParseIp"]);
+        private static readonly Regex ParseSource = new Regex(AppSettings["ParseSource"]);
+        private static readonly Regex ParseHeader = new Regex(AppSettings["ParseHeader"]);
+        private static readonly Regex ParseCommunity = new Regex(AppSettings["ParseCommunity"]);
+        private static readonly Regex ParseRawMessage = new Regex(AppSettings["ParseRawMessage"]);
+        private static readonly Regex ParseTargetIp = new Regex(AppSettings["ParseTargetIp"]);
         // Main program
         static void Main()
         {
-            List<Fields> data = new List<Fields>(); //тут типа наши события распарсенные жить будут
-
-            using (StreamReader r = new StreamReader(InputFile))
+            // Parse enrties from log to list
+            List<Fields> data = new List<Fields>();
+            using (var r = new StreamReader(InputFile))
             {
                 string line;
                 while ((line = r.ReadLine()) != null)
                 {
-                    Fields logEntries = new Fields();
-                    logEntries.DateTime = ParseDateTime.Match(line).Success ? ParseDateTime.Match(line).ToString() : null;
-                    logEntries.Ip = ParseIp.Match(line).Success ? ParseIp.Match(line).ToString() : null;
-                    logEntries.Source = ParseSource.Match(line).Success ? ParseSource.Match(line).ToString() : null;
-                    logEntries.Header = ParseHeader.Match(line).Success ? ParseHeader.Match(line).ToString() : null;
-                    logEntries.Community = ParseCommunity.Match(line).Success ? ParseCommunity.Match(line).ToString() : null;
-                    logEntries.RawMessage = ParseRawMessage.Match(line).Success ? ParseRawMessage.Match(line).ToString() : null;
-                    logEntries.TargetIp = ParseTargetIp.Match(line).Success ? ParseTargetIp.Match(line).ToString() : null;
-
-                    data.Add(logEntries); //в конце добавляем заполненную структуру в лист и переходим к парсингу следующей строки
+                    var logEntries = new Fields
+                    {
+                        DateTime = ParseDateTime.Match(line).Success ? ParseDateTime.Match(line).ToString() : null,
+                        Ip = ParseIp.Match(line).Success ? ParseIp.Match(line).ToString() : null,
+                        Source = ParseSource.Match(line).Success ? ParseSource.Match(line).ToString() : null,
+                        Header = ParseHeader.Match(line).Success ? ParseHeader.Match(line).ToString() : null,
+                        Community = ParseCommunity.Match(line).Success ? ParseCommunity.Match(line).ToString() : null,
+                        RawMessage = ParseRawMessage.Match(line).Success ? ParseRawMessage.Match(line).ToString() : null,
+                        TargetIp = ParseTargetIp.Match(line).Success ? ParseTargetIp.Match(line).ToString() : null
+                    };
+                    data.Add(logEntries); //Add filled structure to list
                 }
             }
-            foreach (Fields h in data)
+            foreach (var h in data)
             {
-                var json = new JavaScriptSerializer().Serialize(h); //опачки!!!
-                                                                    // ну и тут аппендим этот json в файл йопта
+                // Serialize to json
+                var json = new JavaScriptSerializer().Serialize(h);
+                // Append to file
                 File.AppendAllText(OutputFile, json + Environment.NewLine);
             }
         }
