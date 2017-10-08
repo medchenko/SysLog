@@ -42,10 +42,10 @@ namespace SysLog
                 {
                     var logEntries = new Fields
                     {
-                        DateTime = ParseDateTime.Match(line).Success ? ParseDateTime.Match(line).ToString() : null,
+                        DateTime = ParseDateTime.Match(line).Success ? ParseDateTime.Match(line).ToString().Replace(": ", "") : null,
                         Ip = ParseIp.Match(line).Success ? ParseIp.Match(line).ToString() : null,
                         Source = ParseSource.Match(line).Success ? ParseSource.Match(line).ToString() : null,
-                        Header = ParseHeader.Match(line).Success ? ParseHeader.Match(line).ToString() : null,
+                        Header = ParseHeader.Match(line).Success ? ParseHeader.Match(line).ToString().Replace(":", "") : null,
                         Community = ParseCommunity.Match(line).Success ? ParseCommunity.Match(line).ToString() : null,
                         RawMessage = ParseRawMessage.Match(line).Success ? ParseRawMessage.Match(line).ToString().Replace(": ", "") : null,
                         TargetIp = ParseTargetIp.Match(line).Success ? ParseTargetIp.Match(line).ToString() : null
