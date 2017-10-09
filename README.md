@@ -1,8 +1,6 @@
 # SysLog
 Parsing log-file applying regular expressions and converting output to JSON file
 
-# Basics
-
 # Input file example
 
 Feb 11 15:33:41 10.0.4.10 rpd[1402]: bgp_listen_accept: accept(0.0.0.0+179): Too many open files in system
@@ -16,8 +14,6 @@ Feb 11 15:33:43 10.0.4.10 /kernel: kern.maxfiles limit exceeded by uid 0, please
 {"DateTime":"Feb 11 15:33:41","Ip":"10.0.4.10","Source":"rpd[1402]","Header":"task_accept","Community":null,"RawMessage":"Too many open files in system","TargetIp":null}
 {"DateTime":"Feb 11 15:33:42","Ip":"10.0.4.10","Source":"snmpd[1439]","Header":"SNMPD_AUTH_FAILURE","Community":"nsa_log_community","RawMessage":"unauthorized SNMP community from 79.133.116.48 to unknown community name (public)","TargetIp":"79.133.116.48"}
 {"DateTime":"Feb 11 15:33:43","Ip":"10.0.4.10","Source":null,"Header":null,"Community":null,"RawMessage":"kern.maxfiles limit exceeded by uid 0, please see tuning(7).","TargetIp":null}
-
-# Configurations
 
 # How to change input file
   Simply change <add key="InputFile" value="D:\Downloads\syslog.log"/> to any yours path/filename in App.config
