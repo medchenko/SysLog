@@ -20,25 +20,29 @@ Feb 11 15:33:43 10.0.4.10 /kernel: kern.maxfiles limit exceeded by uid 0, please
 ## Configuration
 
 ###### How to change input file
-  Simply change ```<add key="InputFile" value="D:\Downloads\syslog.log"/>``` to any yours path/filename in App.config
+Simply change ```<add key="InputFile" value="D:\Downloads\syslog.log"/>``` to any yours path/filename in App.config
 
 ###### How to change output file
-  Change ```<add key="OutputFile" value="D:\Downloads\result.json"/>``` to any yours path/filename in App.config
+Change ```<add key="OutputFile" value="D:\Downloads\result.json"/>``` to any yours path/filename in App.config
 
 ###### How to change regular expressions
-  RegEx's are stored in App.config within keys:
-  ```
-    <add key="ParseDateTime" value="(^([A-Z][a-z]{2} \d{1,2} \d{2}:\d{2}:\d{2}))"/>
-    <add key="ParseIp" value="([0-9][0-9].[0-9].[0-9].[0-9][0-9])"/>
-    <add key="ParseSource" value="([\w]+\[(.*?)\])"/>
-    <add key="ParseHeader" value="([A-Z]\w+_[A-Z]\w+:)|([a-z]\w+_[a-z]\w+:)"/>
-    <add key="ParseCommunity" value="(nsa_log_community)"/>
-    <add key="ParseRawMessage" value="(:(?!.*:) ((.+\s(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}).*)|.*))"/>
-    <add key="ParseTargetIp" value="([0-9][0-9].[0-9][0-9][0-9].[0-9][0-9][0-9].[0-9][0-9])"/>
-    ```
+RegEx's are stored in App.config within keys:
+```
+<add key="ParseDateTime" value="(^([A-Z][a-z]{2} \d{1,2} \d{2}:\d{2}:\d{2}))"/>
+<add key="ParseIp" value="([0-9][0-9].[0-9].[0-9].[0-9][0-9])"/>
+<add key="ParseSource" value="([\w]+\[(.*?)\])"/>
+<add key="ParseHeader" value="([A-Z]\w+_[A-Z]\w+:)|([a-z]\w+_[a-z]\w+:)"/>
+<add key="ParseCommunity" value="(nsa_log_community)"/>
+<add key="ParseRawMessage" value="(:(?!.*:) ((.+\s(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}).*)|.*))"/>
+<add key="ParseTargetIp" value="([0-9][0-9].[0-9][0-9][0-9].[0-9][0-9][0-9].[0-9][0-9])"/>
+```
 
 ###### How to disable some of regular expressions
-  Just clear all chars between double commas like this: ```<add key="ParseDateTime" value="(^([A-Z][a-z]{2} \d{1,2} \d{2}:\d{2}:\d{2}))"/>``` to ```<add key="ParseDateTime" value=""/>```
+Just clear all chars between double commas like this: 
+Before...
+```<add key="ParseDateTime" value="(^([A-Z][a-z]{2} \d{1,2} \d{2}:\d{2}:\d{2}))"/>```
+After...
+```<add key="ParseDateTime" value=""/>```
 
 ###### How to add new regex
 
