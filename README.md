@@ -43,31 +43,38 @@ Feb 11 15:33:43 10.0.4.10 /kernel: kern.maxfiles limit exceeded by uid 0, please
 ###### How to add new regex
 
 1. Add new key and value to App.config
- ```<add key="NewKey" value="NewValue"/>```
+```
+<add key="NewKey" value="NewValue"/>
+```
 
 2. Add new object to "struct" to Program.cs
-  ```private struct Fields
-        {
-            public string NewKey;
-            public string DateTime;
-            // etc...
-        }```
+```
+private struct Fields
+{
+public string NewKey;
+public string DateTime;
+// etc...
+}
+```
 
 3. Load new key from configuration
-        ```private static readonly Regex ParseDateTime = new Regex(AppSettings["ParseDateTime"]);
-        private static readonly Regex NewKey = new Regex(AppSettings["NewKey"]);
-        // etc...```
+```
+private static readonly Regex ParseDateTime = new Regex(AppSettings["ParseDateTime"]);
+private static readonly Regex NewKey = new Regex(AppSettings["NewKey"]);
+// etc...
+```
 
 4. Add method to cycle
-        ```while ((line = r.ReadLine()) != null)
-                {
-                    var logEntries = new Fields
-                    {
-                        DateTime = ParseDateTime.Match(line).Success ? ParseDateTime.Match(line).ToString().Replace(": ", "") : null,
-                        NewKey = NewKey.Match(line).Success ? NewKey.Match(line).ToString() : null,
-                        // etc...
-                    };
-                    data.Add(logEntries); //Add filled structure to list
-                }```
+```
+while ((line = r.ReadLine()) != null)
+{
+var logEntries = new Fields
+{
+NewKey = NewKey.Match(line).Success ? NewKey.Match(line).ToString() : null,
+// etc...
+};
+data.Add(logEntries); //Add filled structure to list
+}
+```
 
 ## Enjoy!
