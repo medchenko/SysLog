@@ -16,6 +16,8 @@ namespace SysLog
             public string Ip;
             public string Source;
             public string Header;
+            public string Accept;
+            public string Details;
             public string Community;
             public string RawMessage;
             public string TargetIp;
@@ -28,6 +30,8 @@ namespace SysLog
         private static readonly Regex ParseIp = new Regex(AppSettings["ParseIp"]);
         private static readonly Regex ParseSource = new Regex(AppSettings["ParseSource"]);
         private static readonly Regex ParseHeader = new Regex(AppSettings["ParseHeader"]);
+        private static readonly Regex ParseAccept = new Regex(AppSettings["ParseAccept"]);
+        private static readonly Regex ParseDetails = new Regex(AppSettings["ParseDetails"]);
         private static readonly Regex ParseCommunity = new Regex(AppSettings["ParseCommunity"]);
         private static readonly Regex ParseRawMessage = new Regex(AppSettings["ParseRawMessage"]);
         private static readonly Regex ParseTargetIp = new Regex(AppSettings["ParseTargetIp"]);
@@ -47,6 +51,8 @@ namespace SysLog
                         Ip = ParseIp.Match(line).Success ? ParseIp.Match(line).ToString() : null,
                         Source = ParseSource.Match(line).Success ? ParseSource.Match(line).ToString() : null,
                         Header = ParseHeader.Match(line).Success ? ParseHeader.Match(line).ToString().Replace(":", "") : null,
+                        Accept = ParseAccept.Match(line).Success ? ParseAccept.Match(line).ToString().Replace(":", "") : null,
+                        Details = ParseDetails.Match(line).Success ? ParseDetails.Match(line).ToString().Replace(":", "") : null,
                         Community = ParseCommunity.Match(line).Success ? ParseCommunity.Match(line).ToString() : null,
                         RawMessage = ParseRawMessage.Match(line).Success ? ParseRawMessage.Match(line).ToString().Replace(": ", "") : null,
                         TargetIp = ParseTargetIp.Match(line).Success ? ParseTargetIp.Match(line).ToString() : null
