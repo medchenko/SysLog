@@ -2,7 +2,8 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Text.RegularExpressions;
-using System.Web.Script.Serialization;
+//using System.Web.Script.Serialization;
+using Newtonsoft.Json;
 using static System.Configuration.ConfigurationSettings;
 
 namespace SysLog
@@ -56,8 +57,11 @@ namespace SysLog
             foreach (var h in data)
             {
                 // Serialize to json
-                var json = new JavaScriptSerializer().Serialize(h);
+                //var json = new JavaScriptSerializer().Serialize(h);
                 // Append to file
+                //File.AppendAllText(OutputFile, json + Environment.NewLine);
+                var json = JsonConvert.SerializeObject(h,
+                    new JsonSerializerSettings {NullValueHandling = NullValueHandling.Ignore});
                 File.AppendAllText(OutputFile, json + Environment.NewLine);
             }
         }
