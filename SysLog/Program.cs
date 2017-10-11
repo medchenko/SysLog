@@ -1,74 +1,42 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text.RegularExpressions;
-//using System.Web.Script.Serialization;
+using System.Xml.Linq;
 using Newtonsoft.Json;
-using static System.Configuration.ConfigurationSettings;
 
 namespace SysLog
 {
     internal class Program
     {
-        private struct Fields
-        {
-            public string DateTime;
-            public string Ip;
-            public string Source;
-            public string Header;
-            public string Accept;
-            public string Details;
-            public string Community;
-            public string RawMessage;
-            public string TargetIp;
-        }
-        // Load variables from App.config
-        private static readonly string InputFile = AppSettings["InputFile"];
-        private static readonly string OutputFile = AppSettings["OutputFile"];
-        // Load regulars from App.config
-        private static readonly Regex ParseDateTime = new Regex(AppSettings["ParseDateTime"]);
-        private static readonly Regex ParseIp = new Regex(AppSettings["ParseIp"]);
-        private static readonly Regex ParseSource = new Regex(AppSettings["ParseSource"]);
-        private static readonly Regex ParseHeader = new Regex(AppSettings["ParseHeader"]);
-        private static readonly Regex ParseAccept = new Regex(AppSettings["ParseAccept"]);
-        private static readonly Regex ParseDetails = new Regex(AppSettings["ParseDetails"]);
-        private static readonly Regex ParseCommunity = new Regex(AppSettings["ParseCommunity"]);
-        private static readonly Regex ParseRawMessage = new Regex(AppSettings["ParseRawMessage"]);
-        private static readonly Regex ParseTargetIp = new Regex(AppSettings["ParseTargetIp"]);
         // Main program
         private static void Main()
         {
-            // Parse enrties from log to list
-            var data = new List<Fields>();
-            using (var r = new StreamReader(InputFile))
+            // Load config
+            Dictionary<string, string> data = XDocument.Load("config.xml").Root?.Elements().ToDictionary(element => element.Name.ToString(), element => element.Value);
+
+            // Load file
+            using (var r = new StreamReader(data["InputFile"]))
             {
                 string line;
+                // Load every string in file
                 while ((line = r.ReadLine()) != null)
                 {
-                    var logEntries = new Fields
+                    // Apply every regular epression in config
+                    foreach (KeyValuePair<string, string> keyValue in data)
                     {
-                        DateTime = ParseDateTime.Match(line).Success ? ParseDateTime.Match(line).ToString().Replace(": ", "") : null,
-                        Ip = ParseIp.Match(line).Success ? ParseIp.Match(line).ToString() : null,
-                        Source = ParseSource.Match(line).Success ? ParseSource.Match(line).ToString() : null,
-                        Header = ParseHeader.Match(line).Success ? ParseHeader.Match(line).ToString().Replace(":", "") : null,
-                        Accept = ParseAccept.Match(line).Success ? ParseAccept.Match(line).ToString().Replace(":", "") : null,
-                        Details = ParseDetails.Match(line).Success ? ParseDetails.Match(line).ToString().Replace(":", "") : null,
-                        Community = ParseCommunity.Match(line).Success ? ParseCommunity.Match(line).ToString() : null,
-                        RawMessage = ParseRawMessage.Match(line).Success ? ParseRawMessage.Match(line).ToString().Replace(": ", "") : null,
-                        TargetIp = ParseTargetIp.Match(line).Success ? ParseTargetIp.Match(line).ToString() : null
-                    };
-                    data.Add(logEntries); //Add filled structure to list
+                        var logEnrty = new Regex(keyValue.Value).Match(line).Success ? new Regex(keyValue.Value).Match(line).ToString() : null;
+                        if (logEnrty != null)
+                        {
+                            // Append results to file
+                            var json = JsonConvert.SerializeObject(logEnrty,
+                                new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
+                            File.AppendAllText(data["OutputFile"], keyValue.Key + ":" + json.Replace("\"", " ") + Environment.NewLine);
+                        }
+                    }
+                    File.AppendAllText(data["OutputFile"], Environment.NewLine);
                 }
-            }
-            foreach (var h in data)
-            {
-                // Serialize to json
-                //var json = new JavaScriptSerializer().Serialize(h);
-                // Append to file
-                //File.AppendAllText(OutputFile, json + Environment.NewLine);
-                var json = JsonConvert.SerializeObject(h,
-                    new JsonSerializerSettings {NullValueHandling = NullValueHandling.Ignore});
-                File.AppendAllText(OutputFile, json + Environment.NewLine);
             }
         }
     }
